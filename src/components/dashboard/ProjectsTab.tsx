@@ -7,6 +7,7 @@ import { Plus, Edit, Eye, Archive, Loader2 } from 'lucide-react';
 import { useProjects } from '@/hooks/useProjects';
 import CreateProjectDialog from './CreateProjectDialog';
 import { useToast } from '@/hooks/use-toast';
+import SupabaseTest from './SupabaseTest';
 
 const ProjectsTab = () => {
   const { projects, isLoadingProjects, projectsError, archiveProject } = useProjects();
@@ -127,6 +128,10 @@ const ProjectsTab = () => {
         </CardContent>
       </Card>
 
+      <div className="mb-6">
+        <SupabaseTest />
+      </div>
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card>
           <CardHeader>
