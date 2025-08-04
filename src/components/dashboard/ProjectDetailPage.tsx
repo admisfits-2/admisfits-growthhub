@@ -33,12 +33,36 @@ const chartData = [
 ];
 
 // Funnel data
-const funnelData = [
-  { name: 'Impressions', value: 100000, percentage: 100, color: '#3b82f6' },
-  { name: 'Clicks', value: 25000, percentage: 25, color: '#10b981' },
-  { name: 'Leads', value: 5000, percentage: 5, color: '#f59e0b' },
-  { name: 'Conversions', value: 1250, percentage: 1.25, color: '#ef4444' },
-];
+  const funnelData = [
+    { 
+      name: 'Impressions', 
+      value: 100000, 
+      percentage: 100, 
+      color: '#3b82f6',
+      description: 'Total ad impressions across all platforms and campaigns.'
+    },
+    { 
+      name: 'Clicks', 
+      value: 25000, 
+      percentage: 25, 
+      color: '#10b981',
+      description: 'Users who clicked on ads and visited landing pages.'
+    },
+    { 
+      name: 'Leads', 
+      value: 5000, 
+      percentage: 5, 
+      color: '#f59e0b',
+      description: 'Qualified leads who showed interest in the product.'
+    },
+    { 
+      name: 'Conversions', 
+      value: 1250, 
+      percentage: 1.25, 
+      color: '#ef4444',
+      description: 'Final conversions and sales completed.'
+    },
+  ];
 
 const defaultMetrics = [
   { id: 'revenue', name: 'Revenue', value: '$28,000', change: '+12%', trend: 'up', icon: DollarSign },
@@ -259,6 +283,88 @@ export default function ProjectDetailPage() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Three Metric Categories */}
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-6">Project Metrics</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Sales Metrics</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">New Sales Calls</span>
+                  <span className="font-medium">247</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Scheduled Calls</span>
+                  <span className="font-medium">189</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Show Up Rate</span>
+                  <span className="font-medium">76.5%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Qualified Leads</span>
+                  <span className="font-medium">94</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Close Rate</span>
+                  <span className="font-medium">12.8%</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Financial Metrics</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Cash Collected (Pre-Refund)</span>
+                  <span className="font-medium">$59,090</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Refunds</span>
+                  <span className="font-medium text-red-600">$2,450</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Cash Collected (Post-Refund)</span>
+                  <span className="font-medium text-green-600">$56,640</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Sales Value</span>
+                  <span className="font-medium">$59,090</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Marketing Metrics</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Ad Spend</span>
+                  <span className="font-medium">$22,650</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Cost Per Lead</span>
+                  <span className="font-medium">$91.70</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Cost Per Deal</span>
+                  <span className="font-medium">$1,888</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">ROAS (Post-Refund)</span>
+                  <span className="font-medium text-green-600">250%</span>
                 </div>
               </CardContent>
             </Card>

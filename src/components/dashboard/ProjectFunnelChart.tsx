@@ -7,6 +7,7 @@ interface FunnelStage {
   percentage: number;
   color: string;
   icon: any;
+  description: string;
 }
 
 interface ProjectFunnelChartProps {
@@ -15,9 +16,6 @@ interface ProjectFunnelChartProps {
 }
 
 export default function ProjectFunnelChart({ data, title = "Conversion Funnel" }: ProjectFunnelChartProps) {
-  const maxValue = Math.max(...data.map(stage => stage.value));
-  const maxPercentage = Math.max(...data.map(stage => stage.percentage));
-
   return (
     <Card>
       <CardHeader>
@@ -27,81 +25,59 @@ export default function ProjectFunnelChart({ data, title = "Conversion Funnel" }
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
-          {data.map((stage, index) => {
-            const heightRatio = (stage.value / maxValue) * 100;
-            const widthRatio = (stage.percentage / maxPercentage) * 100;
-            
-            return (
-              <div key={stage.name} className="relative">
-                {/* Stage Header */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100">
-                      <stage.icon className="h-4 w-4" style={{ color: stage.color }} />
-                    </div>
-                    <div>
-                      <div className="font-medium text-sm">{stage.name}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {stage.percentage.toFixed(2)}% conversion rate
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-bold text-lg">
-                      {stage.value.toLocaleString()}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {stage.percentage.toFixed(2)}%
-                    </div>
-                  </div>
-                </div>
-
-                {/* Funnel Bar */}
-                <div className="relative">
+        <div className="flex flex-col items-center space-y-4">
+          {data.map((stage, index) => (
+            <div key={stage.name} className="w-full flex items-start gap-4">
+              {/* Stage Number */}
+              <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                   style={{ backgroundColor: stage.color }}>
+                {String(index + 1).padStart(2, '0')}
+              </div>
+              
+              {/* Funnel Segment */}
+              <div className="flex-1 flex items-center gap-4">
+                <div 
+                  className="rounded-lg text-white font-medium text-sm flex items-center justify-center transition-all duration-500 ease-out relative overflow-hidden"
+                  style={{ 
+                    backgroundColor: stage.color,
+                    width: `${100 - (index * 15)}%`,
+                    height: '60px',
+                    minWidth: '120px'
+                  }}
+                >
+                  {/* Gradient overlay for 3D effect */}
                   <div 
-                    className="rounded-lg transition-all duration-500 ease-out relative overflow-hidden"
-                    style={{ 
-                      height: `${Math.max(20, heightRatio * 0.8)}px`,
-                      backgroundColor: stage.color,
-                      opacity: 0.9
-                    }}
-                  >
-                    {/* Gradient overlay */}
-                    <div 
-                      className="absolute inset-0"
-                      style={{
-                        background: `linear-gradient(90deg, ${stage.color} 0%, ${stage.color}80 100%)`
-                      }}
-                    />
-                    
-                    {/* Percentage indicator */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-white text-xs font-medium">
-                        {stage.percentage.toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-                  
-                  {/* Width indicator line */}
-                  <div 
-                    className="absolute top-0 bottom-0 border-l-2 border-dashed border-gray-300"
-                    style={{ 
-                      left: `${100 - widthRatio}%`,
-                      zIndex: 10
+                    className="absolute inset-0"
+                    style={{
+                      background: `linear-gradient(180deg, ${stage.color} 0%, ${stage.color}dd 50%, ${stage.color}aa 100%)`
                     }}
                   />
-                </div>
-
-                {/* Drop indicator */}
-                {index < data.length - 1 && (
-                  <div className="flex justify-center mt-2">
-                    <div className="w-0.5 h-4 bg-gray-300" />
+                  
+                  {/* Text content */}
+                  <div className="relative z-10 text-center">
+                    <div className="font-bold">{stage.name}</div>
+                    <div className="text-xs opacity-90">{stage.value.toLocaleString()}</div>
                   </div>
-                )}
+                </div>
+                
+                {/* Description */}
+                <div className="flex-1 max-w-xs">
+                  <div className="font-medium text-sm mb-1" style={{ color: stage.color }}>
+                    {stage.name}
+                  </div>
+                  <div className="text-xs text-muted-foreground leading-relaxed">
+                    {stage.description}
+                  </div>
+                  <div className="text-xs font-medium text-muted-foreground mt-1">
+                    {stage.percentage.toFixed(2)}% conversion rate
+                  </div>
+                </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
+          
+          {/* Bottom triangle tip */}
+          <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-300" />
         </div>
 
         {/* Summary Stats */}
