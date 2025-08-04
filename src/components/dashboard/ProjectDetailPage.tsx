@@ -4,6 +4,7 @@ import { useProjects } from '@/hooks/useProjects';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import DashboardLayout from '@/components/DashboardLayout';
 import { 
   ArrowLeft, 
   TrendingUp, 
@@ -117,35 +118,29 @@ export default function ProjectDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-card">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => navigate('/')}
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold">{project.name}</h1>
-                <p className="text-muted-foreground">{project.client_name}</p>
-              </div>
-              {getStatusBadge(project.status)}
-            </div>
-            <Button variant="outline" size="sm">
-              <Settings className="h-4 w-4 mr-2" />
-              Project Settings
+    <DashboardLayout activeTab="projects" onTabChange={() => {}}>
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/')}
+            >
+              <ArrowLeft className="h-4 w-4" />
             </Button>
+            <div>
+              <h1 className="text-2xl font-bold">{project.name}</h1>
+              <p className="text-muted-foreground">{project.client_name}</p>
+            </div>
+            {getStatusBadge(project.status)}
           </div>
+          <Button variant="outline" size="sm">
+            <Settings className="h-4 w-4 mr-2" />
+            Project Settings
+          </Button>
         </div>
-      </div>
-
-      {/* Main Content - Single Container */}
-      <div className="container mx-auto px-6 py-6 max-w-7xl">
         {/* Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {customMetrics.map((metric) => (
@@ -306,6 +301,6 @@ export default function ProjectDetailPage() {
           </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 } 
