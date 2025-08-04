@@ -4,7 +4,6 @@ import { useProjects } from '@/hooks/useProjects';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   ArrowLeft, 
   TrendingUp, 
@@ -14,19 +13,31 @@ import {
   Target,
   Settings,
   Plus,
-  Trash2
+  Trash2,
+  Eye,
+  MousePointer,
+  ShoppingCart,
+  CheckCircle
 } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useToast } from '@/hooks/use-toast';
 
-// Mock data for charts - will be replaced with real data
+// Enhanced chart data with more metrics
 const chartData = [
-  { date: 'Jan', revenue: 12000, spend: 8000, leads: 45 },
-  { date: 'Feb', revenue: 15000, spend: 9500, leads: 52 },
-  { date: 'Mar', revenue: 18000, spend: 11000, leads: 61 },
-  { date: 'Apr', revenue: 22000, spend: 12500, leads: 68 },
-  { date: 'May', revenue: 25000, spend: 14000, leads: 75 },
-  { date: 'Jun', revenue: 28000, spend: 15500, leads: 82 },
+  { month: 'Jan', revenue: 12000, spend: 8000, profit: 4000, conversions: 45 },
+  { month: 'Feb', revenue: 15000, spend: 9500, profit: 5500, conversions: 52 },
+  { month: 'Mar', revenue: 18000, spend: 11000, profit: 7000, conversions: 61 },
+  { month: 'Apr', revenue: 22000, spend: 12500, profit: 9500, conversions: 68 },
+  { month: 'May', revenue: 25000, spend: 14000, profit: 11000, conversions: 75 },
+  { month: 'Jun', revenue: 28000, spend: 15500, profit: 12500, conversions: 82 },
+];
+
+// Funnel data
+const funnelData = [
+  { name: 'Impressions', value: 100000, percentage: 100, color: '#3b82f6' },
+  { name: 'Clicks', value: 25000, percentage: 25, color: '#10b981' },
+  { name: 'Leads', value: 5000, percentage: 5, color: '#f59e0b' },
+  { name: 'Conversions', value: 1250, percentage: 1.25, color: '#ef4444' },
 ];
 
 const defaultMetrics = [
@@ -41,7 +52,6 @@ export default function ProjectDetailPage() {
   const navigate = useNavigate();
   const { getProjectById } = useProjects();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('overview');
   const [customMetrics, setCustomMetrics] = useState(defaultMetrics);
 
   const projectQuery = getProjectById(projectId || '');
@@ -134,151 +144,167 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-6 py-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="metrics">Metrics</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
-
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            {/* Metrics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {customMetrics.map((metric) => (
-                <Card key={metric.id}>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      {metric.name}
-                    </CardTitle>
-                    <metric.icon className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{metric.value}</div>
-                    <div className={`flex items-center text-xs ${
-                      metric.trend === 'up' ? 'text-green-600' : 
-                      metric.trend === 'down' ? 'text-red-600' : 'text-muted-foreground'
-                    }`}>
-                      {metric.trend === 'up' && <TrendingUp className="h-3 w-3 mr-1" />}
-                      {metric.trend === 'down' && <TrendingDown className="h-3 w-3 mr-1" />}
-                      {metric.change}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Revenue vs Spend</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} />
-                      <Line type="monotone" dataKey="spend" stroke="#ef4444" strokeWidth={2} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Lead Generation</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="leads" fill="#3b82f6" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Performance Analytics</CardTitle>
+      {/* Main Content - Single Container */}
+      <div className="container mx-auto px-6 py-6 max-w-7xl">
+        {/* Metrics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {customMetrics.map((metric) => (
+            <Card key={metric.id}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {metric.name}
+                </CardTitle>
+                <metric.icon className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">
-                  Detailed analytics and insights will be displayed here.
-                </p>
+                <div className="text-2xl font-bold">{metric.value}</div>
+                <div className={`flex items-center text-xs ${
+                  metric.trend === 'up' ? 'text-green-600' : 
+                  metric.trend === 'down' ? 'text-red-600' : 'text-muted-foreground'
+                }`}>
+                  {metric.trend === 'up' && <TrendingUp className="h-3 w-3 mr-1" />}
+                  {metric.trend === 'down' && <TrendingDown className="h-3 w-3 mr-1" />}
+                  {metric.change}
+                </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          ))}
+        </div>
 
-          {/* Metrics Tab */}
-          <TabsContent value="metrics" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Custom Metrics</h2>
-              <Button onClick={addCustomMetric} size="sm">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Metric
-              </Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {customMetrics.map((metric) => (
-                <Card key={metric.id}>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      {metric.name}
-                    </CardTitle>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeCustomMetric(metric.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{metric.value}</div>
-                    <div className={`flex items-center text-xs ${
-                      metric.trend === 'up' ? 'text-green-600' : 
-                      metric.trend === 'down' ? 'text-red-600' : 'text-muted-foreground'
-                    }`}>
-                      {metric.trend === 'up' && <TrendingUp className="h-3 w-3 mr-1" />}
-                      {metric.trend === 'down' && <TrendingDown className="h-3 w-3 mr-1" />}
-                      {metric.change}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Settings Tab */}
-          <TabsContent value="settings" className="space-y-6">
+        {/* Charts and Funnel Container */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Chart - Takes 70% width */}
+          <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Project Settings</CardTitle>
+                <CardTitle>Performance Metrics</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">
-                  Project configuration and settings will be available here.
-                </p>
+                <ResponsiveContainer width="100%" height={400}>
+                  <AreaChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip 
+                      formatter={(value, name) => [
+                        `$${value.toLocaleString()}`, 
+                        name === 'revenue' ? 'Revenue' : 
+                        name === 'spend' ? 'Ad Spend' : 
+                        name === 'profit' ? 'Profit' : 'Conversions'
+                      ]}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="revenue" 
+                      stackId="1"
+                      stroke="#10b981" 
+                      fill="#10b981" 
+                      fillOpacity={0.8}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="spend" 
+                      stackId="1"
+                      stroke="#ef4444" 
+                      fill="#ef4444" 
+                      fillOpacity={0.8}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="profit" 
+                      stackId="1"
+                      stroke="#3b82f6" 
+                      fill="#3b82f6" 
+                      fillOpacity={0.8}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+          </div>
+
+          {/* Funnel - Takes 30% width */}
+          <div className="lg:col-span-1">
+            <Card>
+              <CardHeader>
+                <CardTitle>Conversion Funnel</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {funnelData.map((stage, index) => (
+                    <div key={stage.name} className="relative">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          {index === 0 && <Eye className="h-4 w-4 text-blue-500" />}
+                          {index === 1 && <MousePointer className="h-4 w-4 text-green-500" />}
+                          {index === 2 && <ShoppingCart className="h-4 w-4 text-yellow-500" />}
+                          {index === 3 && <CheckCircle className="h-4 w-4 text-red-500" />}
+                          <span className="text-sm font-medium">{stage.name}</span>
+                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          {stage.value.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div 
+                          className="h-3 rounded-full transition-all duration-500 ease-out"
+                          style={{ 
+                            width: `${stage.percentage}%`, 
+                            backgroundColor: stage.color 
+                          }}
+                        />
+                      </div>
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {stage.percentage}% conversion rate
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Custom Metrics Management */}
+        <div className="mt-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold">Custom Metrics</h2>
+            <Button onClick={addCustomMetric} size="sm">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Metric
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {customMetrics.map((metric) => (
+              <Card key={metric.id}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    {metric.name}
+                  </CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeCustomMetric(metric.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{metric.value}</div>
+                  <div className={`flex items-center text-xs ${
+                    metric.trend === 'up' ? 'text-green-600' : 
+                    metric.trend === 'down' ? 'text-red-600' : 'text-muted-foreground'
+                  }`}>
+                    {metric.trend === 'up' && <TrendingUp className="h-3 w-3 mr-1" />}
+                    {metric.trend === 'down' && <TrendingDown className="h-3 w-3 mr-1" />}
+                    {metric.change}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
