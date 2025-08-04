@@ -14,16 +14,328 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      google_sheets_connections: {
+        Row: {
+          column_mappings: Json
+          created_at: string
+          created_by: string
+          id: string
+          is_active: boolean
+          last_sync: string | null
+          name: string
+          project_id: string
+          refresh_interval: string
+          sheet_id: string
+          sheet_url: string
+        }
+        Insert: {
+          column_mappings?: Json
+          created_at?: string
+          created_by: string
+          id?: string
+          is_active?: boolean
+          last_sync?: string | null
+          name: string
+          project_id: string
+          refresh_interval?: string
+          sheet_id: string
+          sheet_url: string
+        }
+        Update: {
+          column_mappings?: Json
+          created_at?: string
+          created_by?: string
+          id?: string
+          is_active?: boolean
+          last_sync?: string | null
+          name?: string
+          project_id?: string
+          refresh_interval?: string
+          sheet_id?: string
+          sheet_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "google_sheets_connections_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          ad_spend: number
+          agency_fee_amount: number
+          agency_fee_percentage: number
+          client_name: string
+          created_at: string
+          created_by: string
+          date_range_end: string
+          date_range_start: string
+          id: string
+          invoice_number: string
+          project_id: string
+          refunds: number | null
+          revenue_generated: number
+          status: Database["public"]["Enums"]["invoice_status"]
+          tax_amount: number | null
+          tax_rate: number | null
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          ad_spend: number
+          agency_fee_amount: number
+          agency_fee_percentage?: number
+          client_name: string
+          created_at?: string
+          created_by: string
+          date_range_end: string
+          date_range_start: string
+          id?: string
+          invoice_number: string
+          project_id: string
+          refunds?: number | null
+          revenue_generated: number
+          status?: Database["public"]["Enums"]["invoice_status"]
+          tax_amount?: number | null
+          tax_rate?: number | null
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          ad_spend?: number
+          agency_fee_amount?: number
+          agency_fee_percentage?: number
+          client_name?: string
+          created_at?: string
+          created_by?: string
+          date_range_end?: string
+          date_range_start?: string
+          id?: string
+          invoice_number?: string
+          project_id?: string
+          refunds?: number | null
+          revenue_generated?: number
+          status?: Database["public"]["Enums"]["invoice_status"]
+          tax_amount?: number | null
+          tax_rate?: number | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      project_expenses: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string
+          date: string
+          id: string
+          name: string
+          project_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by: string
+          date: string
+          id?: string
+          name: string
+          project_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string
+          date?: string
+          id?: string
+          name?: string
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_expenses_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_metrics: {
+        Row: {
+          ad_spend: number | null
+          cash_collected_post_refund: number | null
+          cash_collected_pre_refund: number | null
+          created_at: string
+          date: string
+          id: string
+          new_sales_calls: number | null
+          project_id: string
+          qualified_leads: number | null
+          refunds: number | null
+          sales_value: number | null
+          scheduled_calls: number | null
+          show_ups: number | null
+          total_sales: number | null
+          updated_at: string
+        }
+        Insert: {
+          ad_spend?: number | null
+          cash_collected_post_refund?: number | null
+          cash_collected_pre_refund?: number | null
+          created_at?: string
+          date: string
+          id?: string
+          new_sales_calls?: number | null
+          project_id: string
+          qualified_leads?: number | null
+          refunds?: number | null
+          sales_value?: number | null
+          scheduled_calls?: number | null
+          show_ups?: number | null
+          total_sales?: number | null
+          updated_at?: string
+        }
+        Update: {
+          ad_spend?: number | null
+          cash_collected_post_refund?: number | null
+          cash_collected_pre_refund?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          new_sales_calls?: number | null
+          project_id?: string
+          qualified_leads?: number | null
+          refunds?: number | null
+          sales_value?: number | null
+          scheduled_calls?: number | null
+          show_ups?: number | null
+          total_sales?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_metrics_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          client_name: string
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          status: Database["public"]["Enums"]["project_status"]
+          updated_at: string
+        }
+        Insert: {
+          client_name: string
+          created_at?: string
+          created_by: string
+          id?: string
+          name: string
+          status?: Database["public"]["Enums"]["project_status"]
+          updated_at?: string
+        }
+        Update: {
+          client_name?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          status?: Database["public"]["Enums"]["project_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          assigned_by: string | null
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_by?: string | null
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_by?: string | null
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "manager" | "analyst" | "client"
+      invoice_status: "draft" | "sent" | "paid" | "overdue"
+      project_status: "active" | "inactive" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +462,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "manager", "analyst", "client"],
+      invoice_status: ["draft", "sent", "paid", "overdue"],
+      project_status: ["active", "inactive", "archived"],
+    },
   },
 } as const
