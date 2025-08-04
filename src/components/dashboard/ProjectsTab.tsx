@@ -34,7 +34,7 @@ const ProjectsTab = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-8 space-y-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Projects</h1>
@@ -43,11 +43,11 @@ const ProjectsTab = () => {
         <CreateProjectDialog />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>All Projects</CardTitle>
+      <Card className="shadow-lg">
+        <CardHeader className="border-b bg-gray-50/50">
+          <CardTitle className="text-xl">All Projects</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
@@ -93,31 +93,31 @@ const ProjectsTab = () => {
                       0%
                     </TableCell>
                     <TableCell>{new Date(project.updated_at).toLocaleDateString()}</TableCell>
-                                      <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={() => navigate(`/project/${project.id}`)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <ProjectEditDialog project={project} />
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={() => {
-                          archiveProject(project.id);
-                          toast({
-                            title: 'Project Archived',
-                            description: `${project.name} has been archived.`,
-                          });
-                        }}
-                      >
-                        <Archive className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => navigate(`/project/${project.id}`)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <ProjectEditDialog project={project} />
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => {
+                            archiveProject(project.id);
+                            toast({
+                              title: 'Project Archived',
+                              description: `${project.name} has been archived.`,
+                            });
+                          }}
+                        >
+                          <Archive className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
@@ -132,84 +132,82 @@ const ProjectsTab = () => {
         </CardContent>
       </Card>
 
-      <div className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Sales Metrics</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">New Sales Calls</span>
-                <span className="font-medium">247</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Scheduled Calls</span>
-                <span className="font-medium">189</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Show Up Rate</span>
-                <span className="font-medium">76.5%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Qualified Leads</span>
-                <span className="font-medium">94</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Close Rate</span>
-                <span className="font-medium">12.8%</span>
-              </div>
-            </CardContent>
-          </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <Card className="shadow-md hover:shadow-lg transition-shadow">
+          <CardHeader className="border-b bg-blue-50/50">
+            <CardTitle className="text-lg text-blue-700">Sales Metrics</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 pt-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">New Sales Calls</span>
+              <span className="font-semibold text-lg">247</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Scheduled Calls</span>
+              <span className="font-semibold text-lg">189</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Show Up Rate</span>
+              <span className="font-semibold text-lg text-green-600">76.5%</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Qualified Leads</span>
+              <span className="font-semibold text-lg">94</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Close Rate</span>
+              <span className="font-semibold text-lg text-blue-600">12.8%</span>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Financial Metrics</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Cash Collected (Pre-Refund)</span>
-                <span className="font-medium">$59,090</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Refunds</span>
-                <span className="font-medium text-red-600">$2,450</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Cash Collected (Post-Refund)</span>
-                <span className="font-medium text-green-600">$56,640</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Sales Value</span>
-                <span className="font-medium">$59,090</span>
-              </div>
-            </CardContent>
-          </Card>
+        <Card className="shadow-md hover:shadow-lg transition-shadow">
+          <CardHeader className="border-b bg-green-50/50">
+            <CardTitle className="text-lg text-green-700">Financial Metrics</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 pt-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Cash Collected (Pre-Refund)</span>
+              <span className="font-semibold text-lg">$59,090</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Refunds</span>
+              <span className="font-semibold text-lg text-red-600">$2,450</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Cash Collected (Post-Refund)</span>
+              <span className="font-semibold text-lg text-green-600">$56,640</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Sales Value</span>
+              <span className="font-semibold text-lg">$59,090</span>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Marketing Metrics</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Ad Spend</span>
-                <span className="font-medium">$22,650</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Cost Per Lead</span>
-                <span className="font-medium">$91.70</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Cost Per Deal</span>
-                <span className="font-medium">$1,888</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">ROAS (Post-Refund)</span>
-                <span className="font-medium text-green-600">250%</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <Card className="shadow-md hover:shadow-lg transition-shadow">
+          <CardHeader className="border-b bg-purple-50/50">
+            <CardTitle className="text-lg text-purple-700">Marketing Metrics</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 pt-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Ad Spend</span>
+              <span className="font-semibold text-lg">$22,650</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Cost Per Lead</span>
+              <span className="font-semibold text-lg">$91.70</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Cost Per Deal</span>
+              <span className="font-semibold text-lg">$1,888</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">ROAS (Post-Refund)</span>
+              <span className="font-semibold text-lg text-green-600">250%</span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

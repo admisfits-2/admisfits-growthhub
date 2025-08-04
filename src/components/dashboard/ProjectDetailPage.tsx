@@ -119,7 +119,7 @@ export default function ProjectDetailPage() {
 
   return (
     <DashboardLayout activeTab="projects" onTabChange={() => {}}>
-      <div className="p-6 space-y-6">
+      <div className="p-8 space-y-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -141,10 +141,11 @@ export default function ProjectDetailPage() {
             Project Settings
           </Button>
         </div>
+
         {/* Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {customMetrics.map((metric) => (
-            <Card key={metric.id}>
+            <Card key={metric.id} className="shadow-md hover:shadow-lg transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   {metric.name}
@@ -166,12 +167,12 @@ export default function ProjectDetailPage() {
           ))}
         </div>
 
-        {/* Charts and Funnel Container */}
+        {/* Charts and Funnel */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Chart - Takes 70% width */}
           <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
+            <Card className="shadow-lg">
+              <CardHeader className="border-b bg-gray-50/50">
                 <CardTitle>Performance Metrics</CardTitle>
               </CardHeader>
               <CardContent>
@@ -220,44 +221,193 @@ export default function ProjectDetailPage() {
 
           {/* Funnel - Takes 30% width */}
           <div className="lg:col-span-1">
-            <Card>
-              <CardHeader>
-                <CardTitle>Conversion Funnel</CardTitle>
+            <Card className="shadow-lg">
+              <CardHeader className="border-b bg-gray-50/50">
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Conversion Funnel
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {funnelData.map((stage, index) => (
-                    <div key={stage.name} className="relative">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          {index === 0 && <Eye className="h-4 w-4 text-blue-500" />}
-                          {index === 1 && <MousePointer className="h-4 w-4 text-green-500" />}
-                          {index === 2 && <ShoppingCart className="h-4 w-4 text-yellow-500" />}
-                          {index === 3 && <CheckCircle className="h-4 w-4 text-red-500" />}
-                          <span className="text-sm font-medium">{stage.name}</span>
+                <div className="space-y-6">
+                  {funnelData.map((stage, index) => {
+                    const heightRatio = (stage.value / Math.max(...funnelData.map(s => s.value))) * 100;
+                    const widthRatio = (stage.percentage / Math.max(...funnelData.map(s => s.percentage))) * 100;
+                    
+                    return (
+                      <div key={stage.name} className="relative">
+                        {/* Stage Header */}
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100">
+                              {index === 0 && <Eye className="h-4 w-4" style={{ color: stage.color }} />}
+                              {index === 1 && <MousePointer className="h-4 w-4" style={{ color: stage.color }} />}
+                              {index === 2 && <ShoppingCart className="h-4 w-4" style={{ color: stage.color }} />}
+                              {index === 3 && <CheckCircle className="h-4 w-4" style={{ color: stage.color }} />}
+                            </div>
+                            <div>
+                              <div className="font-medium text-sm">{stage.name}</div>
+                              <div className="text-xs text-muted-foreground">
+                                {stage.percentage.toFixed(2)}% conversion rate
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-bold text-lg">
+                              {stage.value.toLocaleString()}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {stage.percentage.toFixed(2)}%
+                            </div>
+                          </div>
                         </div>
-                        <span className="text-sm text-muted-foreground">
-                          {stage.value.toLocaleString()}
-                        </span>
+
+                        {/* Funnel Bar */}
+                        <div className="relative">
+                          <div 
+                            className="rounded-lg transition-all duration-500 ease-out relative overflow-hidden"
+                            style={{ 
+                              height: `${Math.max(20, heightRatio * 0.8)}px`,
+                              backgroundColor: stage.color,
+                              opacity: 0.9
+                            }}
+                          >
+                            {/* Gradient overlay */}
+                            <div 
+                              className="absolute inset-0"
+                              style={{
+                                background: `linear-gradient(90deg, ${stage.color} 0%, ${stage.color}80 100%)`
+                              }}
+                            />
+                            
+                            {/* Percentage indicator */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <span className="text-white text-xs font-medium">
+                                {stage.percentage.toFixed(1)}%
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {/* Width indicator line */}
+                          <div 
+                            className="absolute top-0 bottom-0 border-l-2 border-dashed border-gray-300"
+                            style={{ 
+                              left: `${100 - widthRatio}%`,
+                              zIndex: 10
+                            }}
+                          />
+                        </div>
+
+                        {/* Drop indicator */}
+                        {index < funnelData.length - 1 && (
+                          <div className="flex justify-center mt-2">
+                            <div className="w-0.5 h-4 bg-gray-300" />
+                          </div>
+                        )}
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-3">
-                        <div 
-                          className="h-3 rounded-full transition-all duration-500 ease-out"
-                          style={{ 
-                            width: `${stage.percentage}%`, 
-                            backgroundColor: stage.color 
-                          }}
-                        />
+                    );
+                  })}
+                </div>
+
+                {/* Summary Stats */}
+                <div className="mt-6 pt-4 border-t border-gray-200">
+                  <div className="grid grid-cols-2 gap-4 text-center">
+                    <div>
+                      <div className="text-2xl font-bold text-green-600">
+                        {((funnelData[funnelData.length - 1]?.percentage / funnelData[0]?.percentage) * 100).toFixed(2)}%
                       </div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        {stage.percentage}% conversion rate
-                      </div>
+                      <div className="text-xs text-muted-foreground">Overall Conversion</div>
                     </div>
-                  ))}
+                    <div>
+                      <div className="text-2xl font-bold text-blue-600">
+                        {funnelData[0]?.value.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-muted-foreground">Total Impressions</div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Project Metrics Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <Card className="shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="border-b bg-blue-50/50">
+              <CardTitle className="text-lg text-blue-700">Sales Metrics</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 pt-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">New Sales Calls</span>
+                <span className="font-semibold text-lg">247</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Scheduled Calls</span>
+                <span className="font-semibold text-lg">189</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Show Up Rate</span>
+                <span className="font-semibold text-lg text-green-600">76.5%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Qualified Leads</span>
+                <span className="font-semibold text-lg">94</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Close Rate</span>
+                <span className="font-semibold text-lg text-blue-600">12.8%</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="border-b bg-green-50/50">
+              <CardTitle className="text-lg text-green-700">Financial Metrics</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 pt-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Cash Collected (Pre-Refund)</span>
+                <span className="font-semibold text-lg">$59,090</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Refunds</span>
+                <span className="font-semibold text-lg text-red-600">$2,450</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Cash Collected (Post-Refund)</span>
+                <span className="font-semibold text-lg text-green-600">$56,640</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Sales Value</span>
+                <span className="font-semibold text-lg">$59,090</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="border-b bg-purple-50/50">
+              <CardTitle className="text-lg text-purple-700">Marketing Metrics</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 pt-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Ad Spend</span>
+                <span className="font-semibold text-lg">$22,650</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Cost Per Lead</span>
+                <span className="font-semibold text-lg">$91.70</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Cost Per Deal</span>
+                <span className="font-semibold text-lg">$1,888</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">ROAS (Post-Refund)</span>
+                <span className="font-semibold text-lg text-green-600">250%</span>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Custom Metrics Management */}
@@ -272,7 +422,7 @@ export default function ProjectDetailPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {customMetrics.map((metric) => (
-              <Card key={metric.id}>
+              <Card key={metric.id} className="shadow-md hover:shadow-lg transition-shadow">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     {metric.name}
