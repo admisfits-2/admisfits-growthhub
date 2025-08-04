@@ -25,9 +25,9 @@ export default function ProjectFunnelChart({ data, title = "Conversion Funnel" }
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col items-center space-y-4">
+        <div className="flex flex-col items-center space-y-2">
           {data.map((stage, index) => (
-            <div key={stage.name} className="w-full flex items-start gap-4">
+            <div key={stage.name} className="w-full flex items-center gap-4">
               {/* Stage Number */}
               <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
                    style={{ backgroundColor: stage.color }}>
@@ -40,25 +40,28 @@ export default function ProjectFunnelChart({ data, title = "Conversion Funnel" }
                   className="rounded-lg text-white font-medium text-sm flex items-center justify-center transition-all duration-500 ease-out relative overflow-hidden"
                   style={{ 
                     backgroundColor: stage.color,
-                    width: `${100 - (index * 15)}%`,
-                    height: '60px',
-                    minWidth: '120px'
+                    width: `${100 - (index * 20)}%`,
+                    height: '50px',
+                    minWidth: '100px'
                   }}
                 >
-                  {/* Gradient overlay for 3D effect */}
+                  {/* 3D gradient effect */}
                   <div 
                     className="absolute inset-0"
                     style={{
-                      background: `linear-gradient(180deg, ${stage.color} 0%, ${stage.color}dd 50%, ${stage.color}aa 100%)`
+                      background: `linear-gradient(180deg, ${stage.color} 0%, ${stage.color}dd 50%, ${stage.color}99 100%)`
                     }}
                   />
                   
                   {/* Text content */}
                   <div className="relative z-10 text-center">
-                    <div className="font-bold">{stage.name}</div>
+                    <div className="font-bold text-sm">{stage.name}</div>
                     <div className="text-xs opacity-90">{stage.value.toLocaleString()}</div>
                   </div>
                 </div>
+                
+                {/* Connecting line */}
+                <div className="flex-1 h-px bg-gray-300" />
                 
                 {/* Description */}
                 <div className="flex-1 max-w-xs">
@@ -77,7 +80,7 @@ export default function ProjectFunnelChart({ data, title = "Conversion Funnel" }
           ))}
           
           {/* Bottom triangle tip */}
-          <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-300" />
+          <div className="w-0 h-0 border-l-6 border-r-6 border-t-6 border-transparent border-t-gray-300 mt-2" />
         </div>
 
         {/* Summary Stats */}

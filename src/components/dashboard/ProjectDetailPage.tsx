@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useToast } from '@/hooks/use-toast';
+import ProjectFunnelChart from './ProjectFunnelChart';
 
 // Enhanced chart data with more metrics
 const chartData = [
