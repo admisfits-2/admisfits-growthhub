@@ -20,7 +20,7 @@ import {
   ShoppingCart,
   CheckCircle
 } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useToast } from '@/hooks/use-toast';
 
 // Enhanced chart data with more metrics
@@ -33,12 +33,40 @@ const chartData = [
   { month: 'Jun', revenue: 28000, spend: 15500, profit: 12500, conversions: 82 },
 ];
 
-// Funnel data
+// Funnel data with proper conversion stages
 const funnelData = [
-  { name: 'Impressions', value: 100000, percentage: 100, color: '#3b82f6' },
-  { name: 'Clicks', value: 25000, percentage: 25, color: '#10b981' },
-  { name: 'Leads', value: 5000, percentage: 5, color: '#f59e0b' },
-  { name: 'Conversions', value: 1250, percentage: 1.25, color: '#ef4444' },
+  { 
+    name: 'Impressions', 
+    value: 100000, 
+    percentage: 100, 
+    color: '#3b82f6',
+    icon: Eye,
+    description: 'Total ad impressions'
+  },
+  { 
+    name: 'Clicks', 
+    value: 25000, 
+    percentage: 25, 
+    color: '#10b981',
+    icon: MousePointer,
+    description: 'Click-through rate'
+  },
+  { 
+    name: 'Leads', 
+    value: 5000, 
+    percentage: 5, 
+    color: '#f59e0b',
+    icon: ShoppingCart,
+    description: 'Lead generation'
+  },
+  { 
+    name: 'Conversions', 
+    value: 1250, 
+    percentage: 1.25, 
+    color: '#ef4444',
+    icon: CheckCircle,
+    description: 'Final conversions'
+  },
 ];
 
 const defaultMetrics = [
@@ -172,16 +200,49 @@ export default function ProjectDetailPage() {
           {/* Main Chart - Takes 70% width */}
           <div className="lg:col-span-2">
             <Card className="shadow-lg">
-              <CardHeader className="border-b bg-gray-50/50">
-                <CardTitle>Performance Metrics</CardTitle>
+              <CardHeader className="border-b bg-gradient-to-r from-blue-50 to-purple-50">
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-blue-600" />
+                  Performance Metrics
+                </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 <ResponsiveContainer width="100%" height={400}>
                   <AreaChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
+                    <defs>
+                      <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
+                      </linearGradient>
+                      <linearGradient id="spendGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#ef4444" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#ef4444" stopOpacity={0.1}/>
+                      </linearGradient>
+                      <linearGradient id="profitGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis 
+                      dataKey="month" 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                    />
+                    <YAxis 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                    />
                     <Tooltip 
+                      contentStyle={{
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      }}
                       formatter={(value, name) => [
                         `$${value.toLocaleString()}`, 
                         name === 'revenue' ? 'Revenue' : 
@@ -192,26 +253,26 @@ export default function ProjectDetailPage() {
                     <Area 
                       type="monotone" 
                       dataKey="revenue" 
-                      stackId="1"
                       stroke="#10b981" 
-                      fill="#10b981" 
-                      fillOpacity={0.8}
+                      strokeWidth={2}
+                      fill="url(#revenueGradient)"
+                      stackId="1"
                     />
                     <Area 
                       type="monotone" 
                       dataKey="spend" 
-                      stackId="1"
                       stroke="#ef4444" 
-                      fill="#ef4444" 
-                      fillOpacity={0.8}
+                      strokeWidth={2}
+                      fill="url(#spendGradient)"
+                      stackId="1"
                     />
                     <Area 
                       type="monotone" 
                       dataKey="profit" 
-                      stackId="1"
                       stroke="#3b82f6" 
-                      fill="#3b82f6" 
-                      fillOpacity={0.8}
+                      strokeWidth={2}
+                      fill="url(#profitGradient)"
+                      stackId="1"
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -219,36 +280,37 @@ export default function ProjectDetailPage() {
             </Card>
           </div>
 
-          {/* Funnel - Takes 30% width */}
+          {/* Modern Funnel - Takes 30% width */}
           <div className="lg:col-span-1">
             <Card className="shadow-lg">
-              <CardHeader className="border-b bg-gray-50/50">
+              <CardHeader className="border-b bg-gradient-to-r from-purple-50 to-pink-50">
                 <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" />
+                  <TrendingUp className="h-5 w-5 text-purple-600" />
                   Conversion Funnel
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 <div className="space-y-6">
                   {funnelData.map((stage, index) => {
-                    const heightRatio = (stage.value / Math.max(...funnelData.map(s => s.value))) * 100;
-                    const widthRatio = (stage.percentage / Math.max(...funnelData.map(s => s.percentage))) * 100;
+                    const maxValue = Math.max(...funnelData.map(s => s.value));
+                    const widthPercentage = (stage.value / maxValue) * 100;
+                    const heightPercentage = (stage.percentage / Math.max(...funnelData.map(s => s.percentage))) * 100;
                     
                     return (
                       <div key={stage.name} className="relative">
                         {/* Stage Header */}
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100">
-                              {index === 0 && <Eye className="h-4 w-4" style={{ color: stage.color }} />}
-                              {index === 1 && <MousePointer className="h-4 w-4" style={{ color: stage.color }} />}
-                              {index === 2 && <ShoppingCart className="h-4 w-4" style={{ color: stage.color }} />}
-                              {index === 3 && <CheckCircle className="h-4 w-4" style={{ color: stage.color }} />}
+                            <div 
+                              className="flex items-center justify-center w-10 h-10 rounded-full shadow-md"
+                              style={{ backgroundColor: `${stage.color}15` }}
+                            >
+                              <stage.icon className="h-5 w-5" style={{ color: stage.color }} />
                             </div>
                             <div>
-                              <div className="font-medium text-sm">{stage.name}</div>
+                              <div className="font-semibold text-sm">{stage.name}</div>
                               <div className="text-xs text-muted-foreground">
-                                {stage.percentage.toFixed(2)}% conversion rate
+                                {stage.description}
                               </div>
                             </div>
                           </div>
@@ -262,67 +324,65 @@ export default function ProjectDetailPage() {
                           </div>
                         </div>
 
-                        {/* Funnel Bar */}
+                        {/* Modern Funnel Bar */}
                         <div className="relative">
-                          <div 
-                            className="rounded-lg transition-all duration-500 ease-out relative overflow-hidden"
-                            style={{ 
-                              height: `${Math.max(20, heightRatio * 0.8)}px`,
-                              backgroundColor: stage.color,
-                              opacity: 0.9
-                            }}
-                          >
-                            {/* Gradient overlay */}
+                          {/* Background track */}
+                          <div className="w-full bg-gray-100 rounded-full h-4 relative overflow-hidden">
+                            {/* Funnel shape - gets narrower as it goes down */}
                             <div 
-                              className="absolute inset-0"
-                              style={{
-                                background: `linear-gradient(90deg, ${stage.color} 0%, ${stage.color}80 100%)`
+                              className="h-full rounded-full transition-all duration-700 ease-out relative overflow-hidden"
+                              style={{ 
+                                width: `${widthPercentage}%`,
+                                backgroundColor: stage.color,
+                                background: `linear-gradient(90deg, ${stage.color} 0%, ${stage.color}dd 50%, ${stage.color} 100%)`
                               }}
-                            />
-                            
-                            {/* Percentage indicator */}
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <span className="text-white text-xs font-medium">
-                                {stage.percentage.toFixed(1)}%
-                              </span>
+                            >
+                              {/* Animated gradient overlay */}
+                              <div 
+                                className="absolute inset-0 animate-pulse"
+                                style={{
+                                  background: `linear-gradient(90deg, transparent 0%, ${stage.color}40 50%, transparent 100%)`
+                                }}
+                              />
+                              
+                              {/* Percentage indicator */}
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-white text-xs font-bold drop-shadow-sm">
+                                  {stage.percentage.toFixed(1)}%
+                                </span>
+                              </div>
                             </div>
                           </div>
                           
-                          {/* Width indicator line */}
-                          <div 
-                            className="absolute top-0 bottom-0 border-l-2 border-dashed border-gray-300"
-                            style={{ 
-                              left: `${100 - widthRatio}%`,
-                              zIndex: 10
-                            }}
-                          />
+                          {/* Drop indicator with animation */}
+                          {index < funnelData.length - 1 && (
+                            <div className="flex justify-center mt-3">
+                              <div className="relative">
+                                <div className="w-0.5 h-6 bg-gradient-to-b from-gray-300 to-transparent" />
+                                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+                              </div>
+                            </div>
+                          )}
                         </div>
-
-                        {/* Drop indicator */}
-                        {index < funnelData.length - 1 && (
-                          <div className="flex justify-center mt-2">
-                            <div className="w-0.5 h-4 bg-gray-300" />
-                          </div>
-                        )}
                       </div>
                     );
                   })}
                 </div>
 
-                {/* Summary Stats */}
-                <div className="mt-6 pt-4 border-t border-gray-200">
-                  <div className="grid grid-cols-2 gap-4 text-center">
-                    <div>
-                      <div className="text-2xl font-bold text-green-600">
+                {/* Enhanced Summary Stats */}
+                <div className="mt-8 pt-6 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-6 text-center">
+                    <div className="space-y-2">
+                      <div className="text-3xl font-bold text-green-600">
                         {((funnelData[funnelData.length - 1]?.percentage / funnelData[0]?.percentage) * 100).toFixed(2)}%
                       </div>
-                      <div className="text-xs text-muted-foreground">Overall Conversion</div>
+                      <div className="text-sm text-muted-foreground font-medium">Overall Conversion</div>
                     </div>
-                    <div>
-                      <div className="text-2xl font-bold text-blue-600">
+                    <div className="space-y-2">
+                      <div className="text-3xl font-bold text-blue-600">
                         {funnelData[0]?.value.toLocaleString()}
                       </div>
-                      <div className="text-xs text-muted-foreground">Total Impressions</div>
+                      <div className="text-sm text-muted-foreground font-medium">Total Impressions</div>
                     </div>
                   </div>
                 </div>
