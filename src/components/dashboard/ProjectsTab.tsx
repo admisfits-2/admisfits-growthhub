@@ -6,8 +6,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Plus, Edit, Eye, Archive, Loader2 } from 'lucide-react';
 import { useProjects } from '@/hooks/useProjects';
 import CreateProjectDialog from './CreateProjectDialog';
+import ProjectViewDialog from './ProjectViewDialog';
+import ProjectEditDialog from './ProjectEditDialog';
 import { useToast } from '@/hooks/use-toast';
-import SupabaseTest from './SupabaseTest';
 
 const ProjectsTab = () => {
   const { projects, isLoadingProjects, projectsError, archiveProject } = useProjects();
@@ -91,29 +92,25 @@ const ProjectsTab = () => {
                       0%
                     </TableCell>
                     <TableCell>{new Date(project.updated_at).toLocaleDateString()}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="icon">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={() => {
-                            archiveProject(project.id);
-                            toast({
-                              title: 'Project Archived',
-                              description: `${project.name} has been archived.`,
-                            });
-                          }}
-                        >
-                          <Archive className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+                                      <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <ProjectViewDialog project={project} />
+                      <ProjectEditDialog project={project} />
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={() => {
+                          archiveProject(project.id);
+                          toast({
+                            title: 'Project Archived',
+                            description: `${project.name} has been archived.`,
+                          });
+                        }}
+                      >
+                        <Archive className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
                   </TableRow>
                 ))
               ) : (
@@ -128,10 +125,6 @@ const ProjectsTab = () => {
         </CardContent>
       </Card>
 
-      <div className="mb-6">
-        <SupabaseTest />
-      </div>
-      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card>
           <CardHeader>
