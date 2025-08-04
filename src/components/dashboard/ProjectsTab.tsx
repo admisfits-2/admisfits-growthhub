@@ -3,42 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Edit, Eye, Archive } from 'lucide-react';
+import { Plus, Edit, Eye, Archive, Loader2 } from 'lucide-react';
+import { useProjects } from '@/hooks/useProjects';
+import CreateProjectDialog from './CreateProjectDialog';
+import { useToast } from '@/hooks/use-toast';
 
 const ProjectsTab = () => {
-  // Mock data - will be replaced with real data from Supabase
-  const [projects] = useState([
-    {
-      id: '1',
-      name: 'Tech Startup Campaign',
-      client: 'InnovateTech Ltd',
-      status: 'active',
-      revenue: 24500,
-      spend: 8650,
-      roi: 285,
-      lastUpdated: '2024-01-15'
-    },
-    {
-      id: '2',
-      name: 'E-commerce Store',
-      client: 'ShopFast Inc',
-      status: 'active',
-      revenue: 18920,
-      spend: 6100,
-      roi: 312,
-      lastUpdated: '2024-01-14'
-    },
-    {
-      id: '3',
-      name: 'SaaS Platform',
-      client: 'CloudFlow Systems',
-      status: 'inactive',
-      revenue: 15670,
-      spend: 7900,
-      roi: 198,
-      lastUpdated: '2024-01-10'
-    }
-  ]);
+  const { projects, isLoadingProjects, projectsError, archiveProject } = useProjects();
+  const { toast } = useToast();
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -65,10 +37,7 @@ const ProjectsTab = () => {
           <h1 className="text-3xl font-bold">Projects</h1>
           <p className="text-muted-foreground">Manage your client projects and campaigns</p>
         </div>
-        <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Add Project
-        </Button>
+        <CreateProjectDialog />
       </div>
 
       <Card>
@@ -90,36 +59,69 @@ const ProjectsTab = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {projects.map((project) => (
-                <TableRow key={project.id}>
-                  <TableCell className="font-medium">{project.name}</TableCell>
-                  <TableCell>{project.client}</TableCell>
-                  <TableCell>{getStatusBadge(project.status)}</TableCell>
-                  <TableCell className="text-right font-medium text-green-600">
-                    {formatCurrency(project.revenue)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatCurrency(project.spend)}
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    {project.roi}%
-                  </TableCell>
-                  <TableCell>{project.lastUpdated}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Archive className="h-4 w-4" />
-                      </Button>
+              {isLoadingProjects ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-8">
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Loading projects...
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : projectsError ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-8 text-red-500">
+                    Error loading projects. Please try again.
+                  </TableCell>
+                </TableRow>
+              ) : projects && projects.length > 0 ? (
+                projects.map((project) => (
+                  <TableRow key={project.id}>
+                    <TableCell className="font-medium">{project.name}</TableCell>
+                    <TableCell>{project.client_name}</TableCell>
+                    <TableCell>{getStatusBadge(project.status)}</TableCell>
+                    <TableCell className="text-right font-medium text-green-600">
+                      $0.00
+                    </TableCell>
+                    <TableCell className="text-right">
+                      $0.00
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      0%
+                    </TableCell>
+                    <TableCell>{new Date(project.updated_at).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button variant="ghost" size="icon">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => {
+                            archiveProject(project.id);
+                            toast({
+                              title: 'Project Archived',
+                              description: `${project.name} has been archived.`,
+                            });
+                          }}
+                        >
+                          <Archive className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                    No projects found. Create your first project to get started.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>
