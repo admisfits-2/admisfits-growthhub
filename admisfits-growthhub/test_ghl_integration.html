@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GHL Integration Test</title>
+</head>
+<body>
+    <h1>GHL Integration Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        async function testDatabaseTables() {
+            const results = document.getElementById('results');
+            
+            try {
+                // Test 1: Check ghl_integrations table
+                console.log('Testing ghl_integrations table...');
+                const ghlResponse = await fetch('https://lpuqcvnyzvnrsiyhwoxs.supabase.co/rest/v1/ghl_integrations?select=*&limit=1', {
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwdXFjdm55enZucnNpeWh3b3hzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyNjYwOTIsImV4cCI6MjA2OTg0MjA5Mn0.RAo-x8nCAIr6p7Tn_OodaO3Jc-b3rMbZYry_OtpxKd0',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const ghlData = await ghlResponse.json();
+                console.log('GHL integrations response:', ghlData);
+                results.innerHTML += `<p>✅ ghl_integrations table: ${ghlResponse.status} - ${JSON.stringify(ghlData)}</p>`;
+                
+                // Test 2: Check google_sheets_connections table
+                console.log('Testing google_sheets_connections table...');
+                const gsResponse = await fetch('https://lpuqcvnyzvnrsiyhwoxs.supabase.co/rest/v1/google_sheets_connections?select=*&limit=1', {
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwdXFjdm55enZucnNpeWh3b3hzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyNjYwOTIsImV4cCI6MjA2OTg0MjA5Mn0.RAo-x8nCAIr6p7Tn_OodaO3Jc-b3rMbZYry_OtpxKd0',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const gsData = await gsResponse.json();
+                console.log('Google Sheets connections response:', gsData);
+                results.innerHTML += `<p>✅ google_sheets_connections table: ${gsResponse.status} - ${JSON.stringify(gsData)}</p>`;
+                
+                // Test 3: Check edge function
+                console.log('Testing edge function...');
+                const edgeResponse = await fetch('https://lpuqcvnyzvnrsiyhwoxs.supabase.co/functions/v1/ghl-api', {
+                    method: 'GET'
+                });
+                
+                const edgeData = await edgeResponse.text();
+                console.log('Edge function response:', edgeData);
+                results.innerHTML += `<p>✅ Edge function: ${edgeResponse.status} - ${edgeData}</p>`;
+                
+            } catch (error) {
+                console.error('Test error:', error);
+                results.innerHTML += `<p>❌ Error: ${error.message}</p>`;
+            }
+        }
+        
+        // Run tests when page loads
+        window.onload = testDatabaseTables;
+    </script>
+</body>
+</html>
